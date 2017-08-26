@@ -5,14 +5,14 @@ class Set1
   # Cryptopals rule 
   # Always operate on raw bytes, never on encoded strings. Only use hex and base64 for pretty-printing.
   def self.hex_to_64(str)
-    decoded_hex = str.scan(/../).map { |c| c.hex.chr }.join 
+    decoded_hex = hex_to_text str 
     Base64.strict_encode64 decoded_hex
   end
   
   # Challenge 2: Fixed XOR
   # Write a function that takes two equal-length buffers and produces their XOR combination.
   def self.xor_strings(str1, str2)
-    decoded_and_xor = str1.to_i(16) ^ str2.to_i(16)
+    decoded_and_xor = str1.hex ^ str2.hex
     decoded_and_xor.to_s(16)
   end
   
@@ -23,6 +23,7 @@ class Set1
   # How? Devise some method for "scoring" a piece of English plaintext. 
   # Character frequency is a good metric. Evaluate each output and choose the one with the best score.
   def self.xor_cypher(str)
+    # use .force_encoding("UTF-8").ascii_only? for initial scoring
     
   end
   
