@@ -24,25 +24,36 @@ class Set1
   # Character frequency is a good metric. Evaluate each output and choose the one with the best score..
   def self.xor_cypher(str)
     str_arr = str.scan(/../).map { |h| h.to_i 16 }
-    processed_str = []
-    (0..255).each { |i| 
-      processed_str << Set1.hex_to_text( str_arr.map { |n| n ^ i }.map { |n| n.to_s(16) }.join )
-    }
-    processed_str.select{ |s| test_asciiness(s) }
+    processed_str_arr = []
+    xor_ascii processed_str_arr, str_arr
+    find_plaintext(processed_str_arr)
   end
   
+  # public helper method
   def self.hex_to_text(str)
     str.scan(/../).map { |c| c.hex.chr }.join 
-  end
-  
-  def score_buffer(buf)
-    # score by frequency of a-zA-z
   end
   
   private
   
   def self.test_asciiness(str)
     str.force_encoding("UTF-8").ascii_only? 
+  end
+  
+  def self.score_string(str)
+    str.scan(/[a-zA-Z]/).count
+  end
+  
+  def self.find_plaintext(arr)
+    arr.map { |s| [s, score_string(s)] }
+       .sort { |a, b| a[1] <=> b[1] }
+       .last[0]
+  end
+  
+  def self.xor_ascii(arr, str_arr)
+    (0..255).each { |i| 
+      arr << Set1.hex_to_text( str_arr.map { |n| n ^ i }.map { |n| n.to_s(16) }.join )
+    }
   end
   
 end
