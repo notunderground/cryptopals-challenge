@@ -25,8 +25,8 @@ describe Set1 do
     end
   end
   
-  # test not complete 
-  describe ".xor_cypher" do
+  # test not complete / not sure what to test agaisnt don't know outcome
+  describe ".xor_cypher" 
     context "given hex encoded str find the key and decode message" do
       it "returns plaintext from encoded str" do
         encoded_str = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
