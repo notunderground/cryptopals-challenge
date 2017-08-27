@@ -21,13 +21,28 @@ class Set1
   # ... has been XOR'd against a single character. Find the key, decrypt the message.
   # You can do this by hand. But don't: write code to do it for you.
   # How? Devise some method for "scoring" a piece of English plaintext. 
-  # Character frequency is a good metric. Evaluate each output and choose the one with the best score.
+  # Character frequency is a good metric. Evaluate each output and choose the one with the best score..
   def self.xor_cypher(str)
-    # use .force_encoding("UTF-8").ascii_only? for initial scoring
-    
+    str_arr = str.scan(/../).map { |h| h.to_i 16 }
+    processed_str = []
+    (0..255).each { |i| 
+      processed_str << Set1.hex_to_text( str_arr.map { |n| n ^ i }.map { |n| n.to_s(16) }.join )
+    }
+    processed_str.select{ |s| test_asciiness(s) }
   end
   
   def self.hex_to_text(str)
     str.scan(/../).map { |c| c.hex.chr }.join 
   end
+  
+  def score_buffer(buf)
+    # score by frequency of a-zA-z
+  end
+  
+  private
+  
+  def self.test_asciiness(str)
+    str.force_encoding("UTF-8").ascii_only? 
+  end
+  
 end
