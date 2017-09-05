@@ -1,17 +1,18 @@
 class Set1
   require 'base64'
+  require_relative 'tools'
   
   # Challenge 1: Convert hex to base64
   # Cryptopals rule 
   # Always operate on raw bytes, never on encoded strings. Only use hex and base64 for pretty-printing.
-  def self.hex_to_64(str)
-    decoded_hex = hex_to_text str 
+  def hex_to_64(str)
+    decoded_hex = hex_to_ascii(str) 
     Base64.strict_encode64 decoded_hex
   end
   
   # Challenge 2: Fixed XOR
   # Write a function that takes two equal-length buffers and produces their XOR combination.
-  def self.xor_strings(str1, str2)
+  def xor_strings(str1, str2)
     decoded_and_xor = str1.hex ^ str2.hex
     decoded_and_xor.to_s(16)
   end
@@ -22,38 +23,54 @@ class Set1
   # You can do this by hand. But don't: write code to do it for you.
   # How? Devise some method for "scoring" a piece of English plaintext. 
   # Character frequency is a good metric. Evaluate each output and choose the one with the best score..
-  def self.xor_cypher(str)
-    str_arr = str.scan(/../).map { |h| h.to_i 16 }
-    processed_str_arr = []
-    xor_ascii processed_str_arr, str_arr
-    find_plaintext(processed_str_arr)
+  def xor_cypher(str)
+    str_byte_arr = str.scan(/../).map { |h| h.to_i(16) }
+    processed_buffers = []
+    
+    string_xor_ascii(processed_buffers, str_byte_arr)
+    find_plaintext(processed_buffers)
   end
   
-  # public helper method
+  # Challenge 4: Detect single-character XOR
+  # One of the 60-character strings in this file has been encrypted by single-character XOR.
+  # Find it.
+  def decrypt
+    data = Tools.get_data
+    potential_payloads = []
+    
+    data.each do |encrypted|
+      potential_payloads << xor_cypher(encrypted)
+    end
+    
+    potential_payloads.flatten(1)
+                      .sort { |a,b| a[1] <=> b[1] }
+                      .last(5)
+  end
+  
+  # public helper methods, todo make into module 
   def self.hex_to_text(str)
     str.scan(/../).map { |c| c.hex.chr }.join 
   end
   
+  def find_plaintext(arr)
+    scored_sorted = arr.map { |s| [s, score_string(s)] }
+                       .sort { |a, b| a[1] <=> b[1] }
+    scored_sorted.last(5)
+  end
+  
   private
   
-  def self.test_asciiness(str)
-    str.force_encoding("UTF-8").ascii_only? 
+  def hex_to_ascii(str)
+    str.scan(/../).map { |c| c.hex.chr }.join 
   end
   
-  def self.score_string(str)
-    str.scan(/[a-zA-Z]/).count
+  def score_string(str)
+    str.scan(/[a-zA-Z\s]/).count
   end
   
-  def self.find_plaintext(arr)
-    arr.map { |s| [s, score_string(s)] }
-       .sort { |a, b| a[1] <=> b[1] }
-       .last[0]
-  end
-  
-  def self.xor_ascii(arr, str_arr)
-    (0..255).each { |i| 
+  def string_xor_ascii(arr, str_arr)
+    (0..255).each do |i| 
       arr << Set1.hex_to_text( str_arr.map { |n| n ^ i }.map { |n| n.to_s(16) }.join )
-    }
+    end
   end
-  
 end

@@ -1,6 +1,11 @@
 require 'set_1'
+require 'pry'
 
 describe Set1 do
+  
+  before do 
+    @set = Set1.new
+  end
   
   describe ".hex_to_64" do
     context "given string of hex returns string base64" do
@@ -8,7 +13,7 @@ describe Set1 do
         start_str = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
         answer_str = "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"
         
-        expect(Set1.hex_to_64(start_str)).to eql(answer_str)
+        expect(@set.hex_to_64(start_str)).to eql(answer_str)
       end
     end
   end
@@ -20,27 +25,20 @@ describe Set1 do
         str_2 = "686974207468652062756c6c277320657965"
         final_str   = "746865206b696420646f6e277420706c6179"
         
-        expect(Set1.xor_strings(str_1, str_2)).to eql(final_str)
+        expect(@set.xor_strings(str_1, str_2)).to eql(final_str)
       end
     end
   end
   
   # test not complete / not sure what to test agaisnt don't know outcome
-  describe ".xor_cypher" 
+  describe ".xor_cypher" do 
     context "given hex encoded str find the key and decode message" do
       it "returns plaintext from encoded str" do
         encoded_str = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
         
+        expect(@set.xor_cypher(encoded_str)).to include(["Cooking MC's like a pound of bacon", 33])
       end
     end
   end
   
-  describe ".hex_to_text" do
-    context "given string of 8 byte hex convert to chars" do
-      it "returns plaintext string" do
-        str = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
-        expect(Set1.hex_to_text(str)).to eql("I'm killing your brain like a poisonous mushroom")
-      end
-    end
-  end
 end
