@@ -24,9 +24,11 @@ class Set1
   # How? Devise some method for "scoring" a piece of English plaintext. 
   # Character frequency is a good metric. Evaluate each output and choose the one with the best score..
   def xor_cypher(str)
+    # try rewrite using Array#pack 'H*' or String#unpack
     str_byte_arr = str.scan(/../).map { |h| h.to_i(16) }
     processed_buffers = []
     
+    #instead of taking two arrays, take in 1
     string_xor_ascii(processed_buffers, str_byte_arr)
     find_plaintext(processed_buffers)
   end
@@ -45,6 +47,30 @@ class Set1
     potential_payloads.flatten(1)
                       .sort { |a,b| a[1] <=> b[1] }
                       .last(5)
+  end
+  
+  # Challenge 5: Implement repeating-key XOR
+  # Here is the opening stanza of an important work of the English language:
+  # Burning 'em, if you ain't quick and nimble
+  # I go crazy when I hear a cymbal
+  # Encrypt it, under the key "ICE", using repeating-key XOR.
+  # 
+  # In repeating-key XOR, you'll sequentially apply each byte of the key; the first
+  # byte of plaintext will be XOR'd against I, the next C, the next E, then I again
+  # for the 4th byte, and so on.
+  # 
+  # It should come out to:
+  # 0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f
+  def repeating_key_xor(string, key)
+    counter = 0
+    encrypted = []
+    string.bytes.each do |byte|
+      encrypted << (byte ^ key.bytes[counter])
+      
+      counter = counter == 2 ? 0 : counter + 1
+    end
+    # binding.pry
+    encrypted.map{ |i| sprintf("%02x", i) }.join.strip
   end
   
   # public helper methods, todo make into module 

@@ -41,4 +41,15 @@ describe Set1 do
     end
   end
   
+  describe ".repeating_key_xor" do
+    context "encrypt string with key using xor" do
+      it "returns hash" do
+        key = "ICE"
+        string_1 = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal"
+        hash_1 = "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"
+        
+        expect(@set.repeating_key_xor(string_1, key)).to eql(hash_1)
+      end
+    end
+  end
 end
