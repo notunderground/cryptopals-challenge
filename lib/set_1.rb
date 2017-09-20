@@ -73,6 +73,17 @@ class Set1
     encrypted.map{ |i| sprintf("%02x", i) }.join.strip
   end
   
+  # Challenge 6: Break repeating-key XOR
+  def hamming_distance(str1, str2)
+    ary1 = str1.unpack('b*')[0].chars
+    ary2 = str2.unpack('b*')[0].chars
+    ary3 = ary1.zip(ary2)
+    differing_bits = 0
+    ary3.each do |bits|
+      differing_bits += 1 if bits[0] != bits[1]  
+    end
+    differing_bits
+  end
   # public helper methods, todo make into module 
   def self.hex_to_text(str)
     str.scan(/../).map { |c| c.hex.chr }.join 

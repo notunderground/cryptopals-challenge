@@ -52,4 +52,15 @@ describe Set1 do
       end
     end
   end
+  
+  describe ".hamming_distance" do
+    context "computes amount of differing bits" do
+      it "returns integer value" do
+        string_1 = "this is a test"
+        string_2 = "wokka wokka!!!"
+        
+        expect(@set.hamming_distance(string_1, string_2)).to eql(37)
+      end
+    end
+  end
 end
