@@ -37,7 +37,7 @@ class Set1
   # One of the 60-character strings in this file has been encrypted by single-character XOR.
   # Find it.
   def decrypt
-    data = Tools.get_data
+    data = Tools.get_data4
     potential_payloads = []
     
     data.each do |encrypted|
@@ -67,23 +67,33 @@ class Set1
     string.bytes.each do |byte|
       encrypted << (byte ^ key.bytes[counter])
       
-      counter = counter == 2 ? 0 : counter + 1
+      counter = counter == 2 ? 0 : counter += 1
     end
     # binding.pry
     encrypted.map{ |i| sprintf("%02x", i) }.join.strip
   end
   
   # Challenge 6: Break repeating-key XOR
+  def crack_xor
+    key_size = (2..40).to_a
+    data = Tools.get_data6
+    binding.pry
+    
+  end
+  
   def hamming_distance(str1, str2)
     ary1 = str1.unpack('b*')[0].chars
     ary2 = str2.unpack('b*')[0].chars
     ary3 = ary1.zip(ary2)
     differing_bits = 0
+    
     ary3.each do |bits|
       differing_bits += 1 if bits[0] != bits[1]  
     end
+    
     differing_bits
   end
+  
   # public helper methods, todo make into module 
   def self.hex_to_text(str)
     str.scan(/../).map { |c| c.hex.chr }.join 
